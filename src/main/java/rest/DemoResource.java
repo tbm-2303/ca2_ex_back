@@ -127,7 +127,7 @@ public class DemoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("catfactx")
     public Response test() throws IOException {
-       return Response.ok().entity(GSON.toJson(getCatFact("https://catfact.ninja/fact"))).build();
+       return Response.ok().entity(GSON.toJson(FACADE.getRandomCatFact())).build();
     }
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -158,37 +158,5 @@ public class DemoResource {
         String thisuser = securityContext.getUserPrincipal().getName();
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
-
-
-
-
-
-
-
-
-
-
-    public JsonObject getCatFact(String urls) {
-        try {
-            URL url = new URL(urls);//your url i.e fetch data from .
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "server");
-            conn.setRequestProperty("Accept", "application/json;charset=UTF-8");
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed: HTTP Error code : " + conn.getResponseCode());
-            }
-            InputStreamReader in = new InputStreamReader(conn.getInputStream());
-            BufferedReader br = new BufferedReader(in);
-            String output = br.readLine();
-            JsonObject object = new Gson().fromJson(output, JsonObject.class);
-            conn.disconnect();
-            return object;
-
-        } catch (Exception e) {
-            System.out.println("Exception in NetClientGet:- " + e);
-            JsonObject error = new Gson().fromJson(new Gson().toJson(e), JsonObject.class);
-            return error;
-        }
-    }
+    
 }
