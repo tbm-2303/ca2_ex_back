@@ -22,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
+import facades.DemoFacade;
 import utils.EMF_Creator;
 import utils.HttpUtils;
 
@@ -33,6 +34,8 @@ public class DemoResource {
     
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final DemoFacade FACADE = DemoFacade.getFacade(EMF_Creator.createEntityManagerFactory());
+
 
     @Context
     private UriInfo context;
@@ -118,6 +121,8 @@ public class DemoResource {
         return "{\"msg\": \"cat fact: " + fact + "\"}";
     }
 
+
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("catfactx")
@@ -128,9 +133,13 @@ public class DemoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("randomjokex")
     public Response test2() throws IOException {
-        return Response.ok().entity(GSON.toJson(getCatFact("https://api.chucknorris.io/jokes/random"))).build();
+        return Response.ok().entity(GSON.toJson(FACADE.getRandomJoke())).build();
     }
-//d
+
+
+   
+
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
